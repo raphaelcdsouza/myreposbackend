@@ -80,7 +80,23 @@ app.delete("/repositories/:id", (request, response) => {
 });
 
 app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  if (!isUuid(id)) {
+    return response.status(400).json({ error: 'Invalid uuid' });
+  }
+
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Repository does not exists' });
+  }
+
+  const repository = repositories[repositoryIndex];
+
+  repository.likes++
+
+  return response.json(repository);
 });
 
 module.exports = app;
